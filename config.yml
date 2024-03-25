@@ -1,7 +1,3 @@
-extensions:
-  bearertokenauth/github:
-    token: ${env:GITHUB_TOKEN}
-
 receivers:
   githubactionslogreceiver:
     github_token: ${env:GITHUB_TOKEN}
