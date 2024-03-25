@@ -2,10 +2,6 @@ receivers:
   githubactionslogreceiver:
     github_token: ${env:GITHUB_TOKEN}
     path: /workflow-run-events
-  otlp:
-    protocols:
-      grpc:
-      http:
 
 processors:
   batch:
@@ -25,7 +21,7 @@ exporters:
 service:
   pipelines:
     logs:
-      receivers: [githubactionslogreceiver,otlp]
+      receivers: [githubactionslogreceiver]
       exporters:
         - elasticsearch/log
 #        - debug
