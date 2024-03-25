@@ -16,3 +16,6 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionslogreceiver v0.96.0
     import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionslogreceiver
     path: ../opentelemetry-collector-contrib/receiver/githubactionslogreceiver
+
+extensions:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.96.0
