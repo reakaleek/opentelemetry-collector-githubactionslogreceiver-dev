@@ -1,0 +1,34 @@
+receivers:
+  githubactionslogreceiver:
+    github_token: ${env:GITHUB_TOKEN}
+    path: /workflow-run-events
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+
+exporters:
+  elasticsearch/log:
+    endpoints:
+      - http://localhost:9200
+    logs_index: logs-github-actions-1
+    sending_queue:
+      enabled: true
+      num_consumers: 20
+      queue_size: 1000
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    logs:
+      receivers: [githubactionslogreceiver,otlp]
+      exporters:
+        - elasticsearch/log
+#        - debug
+  telemetry:
+    logs:
+      level: debug
