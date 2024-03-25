@@ -1,5 +1,5 @@
 receivers:
-  githubactionslogreceiver:
+  githubactionslog:
     github_token: ${env:GITHUB_TOKEN}
     path: /workflow-run-events
 
@@ -21,7 +21,7 @@ exporters:
 service:
   pipelines:
     logs:
-      receivers: [githubactionslogreceiver]
+      receivers: [githubactionslog]
       exporters:
         - elasticsearch/log
 #        - debug
