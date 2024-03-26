@@ -14,3 +14,6 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionslogreceiver v0.96.0
     import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionslogreceiver
     path: ./githubactionslogreceiver
+
+extensions:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.96.0
