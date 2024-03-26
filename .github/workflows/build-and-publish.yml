@@ -1,0 +1,66 @@
+name: Build and Publish
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch: ~
+
+env:
+  OTEL_VERSION: 0.96.0
+
+concurrency:
+  group: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.workflow || github.run_id }}
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: opentelemetry-collector-githubactionslogreceiver-dev
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: checkout reakaleek/opentelemetry-collector-contrib@feature/githubactionslogsreceiver
+        uses: actions/checkout@v4
+        with:
+          repository: reakaleek/opentelemetry-collector-contrib
+          ref: feature/githubactionslogsreceiver
+          path: opentelemetry-collector-contrib
+          sparse-checkout: receiver/githubactionslogreceiver
+
+      - name: Generate image name
+        id: image
+        working-directory: opentelemetry-collector-contrib
+        run: |
+          commit=$(git rev-parse HEAD)
+          name="reakaleek/otelcol-custom:${OTEL_VERSION}-githubactionslogreceiver-${commit}"
+          echo "name=${name}" >> "${GITHUB_OUTPUT}"
+
+      - name: Copy githubactionslogreceiver
+        working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
+        run: make githubactionslogreceiver
+
+      - if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: reakaleek
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and export
+        uses: docker/build-push-action@v5
+        with:
+          context: opentelemetry-collector-githubactionslogreceiver-dev/docker
+          tags: ${{ steps.image.outputs.name }}
+          push: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+          build-args: |
+            OTEL_VERSION=${{ env.OTEL_VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
