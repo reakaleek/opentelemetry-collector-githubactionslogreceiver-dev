@@ -6,6 +6,7 @@ COPY . .
 RUN CGO_ENABLED=0 builder --config=builder-config.yml
 
 FROM scratch
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /app/bin/otelcol-custom /
 
 EXPOSE 19418/tcp
