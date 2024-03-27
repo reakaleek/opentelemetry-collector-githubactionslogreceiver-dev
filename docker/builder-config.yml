@@ -3,6 +3,7 @@ dist:
   output_path: ./bin
 
 exporters:
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/elasticsearchexporter v0.96.0
 
 processors:
