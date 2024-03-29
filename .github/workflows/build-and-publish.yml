@@ -39,7 +39,7 @@ jobs:
         id: image
         working-directory: opentelemetry-collector-contrib
         run: |
-          commit=$(git rev-parse HEAD)
+          commit=$(git rev-parse --short HEAD)
           name="${DOCKER_IMAGE_NAME}:${OTEL_VERSION}-githubactionslogreceiver-${commit}"
           echo "name=${name}" >> "${GITHUB_OUTPUT}"
 
