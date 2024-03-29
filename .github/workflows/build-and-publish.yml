@@ -11,6 +11,7 @@ on:
 
 env:
   OTEL_VERSION: 0.96.0
+  DOCKER_IMAGE_NAME: reakaleek/otelcol-custom
 
 concurrency:
   group: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.workflow || github.run_id }}
@@ -39,7 +40,7 @@ jobs:
         working-directory: opentelemetry-collector-contrib
         run: |
           commit=$(git rev-parse HEAD)
-          name="reakaleek/otelcol-custom:${OTEL_VERSION}-githubactionslogreceiver-${commit}"
+          name="${DOCKER_IMAGE_NAME}:${OTEL_VERSION}-githubactionslogreceiver-${commit}"
           echo "name=${name}" >> "${GITHUB_OUTPUT}"
 
       - name: Copy githubactionslogreceiver
@@ -57,7 +58,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: opentelemetry-collector-githubactionslogreceiver-dev/docker
-          tags: ${{ steps.image.outputs.name }}
+          tags: |
+            ${{ steps.image.outputs.name }}
+            ${DOCKER_IMAGE_NAME}:latest
           push: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
           build-args: |
             OTEL_VERSION=${{ env.OTEL_VERSION }}
