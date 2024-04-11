@@ -1,10 +1,17 @@
 receivers:
+  webhookevent:
+    endpoint: "localhost:8088"
+    path: "/webhook"
   githubactionslog:
-    github_token: ${env:GITHUB_TOKEN}
-    path: /workflow-run-events
+    github_auth:
+      token: ${env:GITHUB_TOKEN}
 
 processors:
   batch:
+
+extensions:
+  zpages:
+    endpoint: "localhost:55679"
 
 exporters:
   elasticsearch/log:
@@ -16,9 +23,10 @@ exporters:
       num_consumers: 20
       queue_size: 1000
   debug:
-    verbosity: detailed
+    verbosity: basic
 
 service:
+  extensions: [zpages]
   pipelines:
     logs:
       receivers: [githubactionslog]
