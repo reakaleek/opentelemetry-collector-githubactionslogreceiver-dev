@@ -32,8 +32,8 @@ service:
     logs:
       receivers: [githubactionslog]
       exporters:
-#        - elasticsearch/log
-        - debug
+        - elasticsearch/log
+#        - debug
   telemetry:
     logs:
       level: debug
