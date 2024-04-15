@@ -10,6 +10,7 @@ processors:
   batch:
 
 extensions:
+  pprof:
   zpages:
     endpoint: "localhost:55679"
 
@@ -26,7 +27,7 @@ exporters:
     verbosity: basic
 
 service:
-  extensions: [zpages]
+  extensions: [zpages, pprof]
   pipelines:
     logs:
       receivers: [githubactionslog]

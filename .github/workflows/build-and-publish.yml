@@ -7,7 +7,13 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: ~
+  workflow_dispatch:
+    inputs:
+      collector_ref:
+        description: 'The ref of the opentelemetry-collector-contrib repository to use.'
+        required: true
+        default: 'feature/githubactionslogsreceiver'
+
 
 env:
   OTEL_VERSION: 0.98.0
@@ -31,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: reakaleek/opentelemetry-collector-contrib
-          ref: feature/githubactionslogsreceiver
+          ref: ${{ inputs.collector_ref }}
           path: opentelemetry-collector-contrib
           sparse-checkout: receiver/githubactionslogreceiver
 
