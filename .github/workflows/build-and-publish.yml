@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: reakaleek/opentelemetry-collector-contrib
-          ref: ${{ inputs.collector_ref }}
+          ref: ${{ inputs.collector_ref || inputs.collector_ref.default }}
           path: opentelemetry-collector-contrib
           sparse-checkout: receiver/githubactionslogreceiver
 
