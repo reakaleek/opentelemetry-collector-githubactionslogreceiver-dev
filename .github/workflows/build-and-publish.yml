@@ -33,6 +33,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: checkout krzko/opentelemetry-collector-contrib@edc0f22d7deb6563a236daef5558f1e971a81c5d
+        uses: actions/checkout@v4
+        with:
+          repository: krzko/opentelemetry-collector-contrib
+          ref: edc0f22d7deb6563a236daef5558f1e971a81c5d
+          path: opentelemetry-collector-contrib
+          sparse-checkout: receiver/githubactionsreceiver
+
       - name: checkout reakaleek/opentelemetry-collector-contrib@feature/githubactionslogsreceiver
         uses: actions/checkout@v4
         with:
@@ -52,6 +60,10 @@ jobs:
       - name: Copy githubactionslogreceiver
         working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
         run: make githubactionslogreceiver
+
+      - name: Copy githubactionsreceiver
+        run: |
+          cp -r ../opentelemetry-collector-contrib/receiver/githubactionsreceiver ./githubactionsreceiver
 
       - if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
         name: Login to Docker Hub
