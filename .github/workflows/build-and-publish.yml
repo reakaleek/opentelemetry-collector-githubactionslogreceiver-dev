@@ -62,8 +62,9 @@ jobs:
         run: make githubactionslogreceiver
 
       - name: Copy githubactionsreceiver
+        working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
         run: |
-          cp -r ../krzko-opentelemetry-collector-contrib/receiver/githubactionsreceiver ./githubactionsreceiver
+          cp -r ../../krzko-opentelemetry-collector-contrib/receiver/githubactionsreceiver ./githubactionsreceiver
 
       - if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
         name: Login to Docker Hub
