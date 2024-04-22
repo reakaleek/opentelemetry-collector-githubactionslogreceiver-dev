@@ -38,7 +38,7 @@ jobs:
         with:
           repository: krzko/opentelemetry-collector-contrib
           ref: edc0f22d7deb6563a236daef5558f1e971a81c5d
-          path: opentelemetry-collector-contrib
+          path: krzko-opentelemetry-collector-contrib
           sparse-checkout: receiver/githubactionsreceiver
 
       - name: checkout reakaleek/opentelemetry-collector-contrib@feature/githubactionslogsreceiver
@@ -63,7 +63,7 @@ jobs:
 
       - name: Copy githubactionsreceiver
         run: |
-          cp -r ../opentelemetry-collector-contrib/receiver/githubactionsreceiver ./githubactionsreceiver
+          cp -r ../krzko-opentelemetry-collector-contrib/receiver/githubactionsreceiver ./githubactionsreceiver
 
       - if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
         name: Login to Docker Hub
