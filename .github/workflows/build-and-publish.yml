@@ -36,8 +36,8 @@ jobs:
       - name: checkout krzko/opentelemetry-collector-contrib@edc0f22d7deb6563a236daef5558f1e971a81c5d
         uses: actions/checkout@v4
         with:
-          repository: krzko/opentelemetry-collector-contrib
-          ref: fe37dea25f1fa6a7f6cd1f4552cee277c1f1eb9d
+          repository: unelastisch/opentelemetry-collector-contrib
+          ref: 5758fff63ca1e5f56b2214a53b1b122b97dd42c1
           path: krzko-opentelemetry-collector-contrib
           sparse-checkout: receiver/githubactionsreceiver
 
