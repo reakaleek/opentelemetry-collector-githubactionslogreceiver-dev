@@ -1,0 +1,155 @@
+# yaml-language-server: $schema=./values.schema.json
+
+## @section Ingress configuration
+## @param host The hostname of the OpenTelemetry Collector
+host: otelcol-github-actions.elastic.dev
+
+## @param ip.whitelist The IP whitelist for the Ingress
+ip:
+  whitelist:
+  # GitHub hooks IP ranges https://api.github.com/meta
+  - "192.30.252.0/22"
+  - "185.199.108.0/22"
+  - "140.82.112.0/20"
+  - "143.55.64.0/20"
+  - "2a0a:a440::/29"
+  - "2606:50c0::/32"
+  - "3.124.116.144" # VPN
+  - "18.192.28.203" # VPN
+
+## @section Image configuration
+## @param image.repository The image repository to pull from
+## @param image.tag The image tag to pull
+## @param image.pullPolicy The image pull policy
+image:
+  repository: reakaleek/otelcol-custom@sha256
+  tag: 72901dc3a6fb3a18948cf48e0b451519aca1f9edd2d334aaeb826d75647fedf9
+  pullPolicy: IfNotPresent
+
+## @section Replica count configuration
+## @param replicaCount The number of replicas to run
+## Should not be more than 1 if prometheus receiver is enabled.
+## See https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md#%EF%B8%8F-warning
+replicaCount: 1
+
+## @section Resources configuration
+## @param resources The resources to allocate to the container
+resources:
+  requests:
+    memory: "8Gi"
+    cpu: "2500m"
+
+## @section Extra environment variables
+## @param extraEnv[0].name The name of the environment variable
+## @param extraEnv[0].value The value of the environment variable
+extraEnv:
+  - name: GOMEMLIMIT
+    value: "6GiB" # Approx 80% of the container memory limit. Recommended by the memory_limiter processor
+
+## @section Service account configuration
+## @param serviceAccount.annotations Annotations for the service account
+serviceAccount:
+  annotations: {}
+
+## @section OpenTelemetry Collector onfiguration
+## @param collector.config [object] The configuration for the OpenTelemetry Collector
+collector:
+  config:
+    extensions:
+      zpages:
+        endpoint: "0.0.0.0:55679"
+      pprof:
+        endpoint: "0.0.0.0:1777"
+
+    receivers:
+      githubactions:
+        path: /events
+        secret: "${env:WEBHOOK_SECRET}"
+      githubactionslog:
+        batch_size: 10000
+        webhook_secret: "${env:WEBHOOK_SECRET}"
+        github_auth:
+          app_id: "${env:GITHUB_APP_ID}"
+          installation_id: "${env:GITHUB_INSTALLATION_ID}"
+          private_key: "${env:GITHUB_APP_PRIVATE_KEY}"
+      prometheus/self:
+        config:
+          scrape_configs:
+            - job_name: 'otelcol'
+              scrape_interval: 10s
+              static_configs:
+                - targets: [ '0.0.0.0:8888' ]
+              metric_relabel_configs:
+                - source_labels: [ __name__ ]
+                  regex: '.*grpc_io.*'
+                  action: drop
+
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 65
+        spike_limit_percentage: 20
+      batch/apm-logs:
+        # apm server cannot handle a larger batch size for logs
+        send_batch_size: 2000
+        send_batch_max_size: 2000
+        timeout: 0s
+      batch:
+        send_batch_max_size: 10000
+        timeout: 0s
+
+    exporters:
+      otlp/apm:
+        endpoint: "${env:APM_URL}"
+        headers:
+          Authorization: "Bearer ${env:APM_TOKEN}"
+        sending_queue:
+          enabled: false
+#      elasticsearch/log:
+#        mapping:
+#          mode: ecs
+#        endpoints:
+#          - "${env:ELASTICSEARCH_URL}"
+#        logs_index: logs-github-actions-1
+#        user: "${env:ELASTICSEARCH_USERNAME}"
+#        password: "${env:ELASTICSEARCH_PASSWORD}"
+      debug:
+        verbosity: basic
+
+    service:
+      extensions: [zpages, pprof]
+      telemetry:
+        metrics:
+          address: ":8888"
+        logs:
+          encoding: json
+          level: INFO
+      pipelines:
+        traces:
+          receivers:
+            - githubactions
+          processors:
+            - memory_limiter
+            - batch
+          exporters:
+            - otlp/apm
+        logs:
+          receivers:
+            - githubactionslog
+          processors:
+            - memory_limiter
+            - batch/apm-logs
+          exporters:
+            - otlp/apm
+        metrics:
+          receivers:
+            - prometheus/self
+          processors:
+            - memory_limiter
+          exporters:
+            - otlp/apm
+
+## @skip reloader Reloader configuration
+reloader:
+  reloader:
+    watchGlobally: false

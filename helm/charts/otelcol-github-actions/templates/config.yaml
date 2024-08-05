@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "otelcol-github-actions.fullname" . }}-otelcol-config
+  labels:
+  {{- include "otelcol-github-actions.labels" . | nindent 4 }}
+data:
+  config.yml: |
+  {{- .Values.collector.config | toYaml | nindent 4 }}

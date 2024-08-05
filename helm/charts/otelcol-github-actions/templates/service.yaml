@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "otelcol-github-actions.fullname" . }}-otel-collector
+  labels:
+    app: opentelemetry
+    component: otel-collector
+  {{- include "otelcol-github-actions.labels" . | nindent 4 }}
+spec:
+  type: LoadBalancer
+  selector:
+    app: opentelemetry
+    component: otel-collector
+  {{- include "otelcol-github-actions.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: ghactionslogsreceiver
+      port: {{ include "otelcol-github-actions.receiver.port" . }}
+      targetPort: {{ include "otelcol-github-actions.receiver.port" . }}
+      protocol: TCP
+    - name: pprof
+      port: 1777
+      targetPort: 1777
+      protocol: TCP
+    - name: zpages
+      port: 55679
+      targetPort: 55679
+      protocol: TCP
+    - name: metrics
+      port: 8888
+      targetPort: 8888
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "otelcol-github-actions.fullname" . }}-otel-collector-traces
+  labels:
+    app: opentelemetry
+    component: otel-collector
+  {{- include "otelcol-github-actions.labels" . | nindent 4 }}
+spec:
+  type: LoadBalancer
+  selector:
+    app: opentelemetry
+    component: otel-collector
+  {{- include "otelcol-github-actions.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: githubactionsreceiver
+      port: 19418
+      targetPort: 19418
+      protocol: TCP

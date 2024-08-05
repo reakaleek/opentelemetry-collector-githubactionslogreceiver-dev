@@ -1,0 +1,23 @@
+suite: test relationships
+templates:
+  - deployment.yaml
+release:
+  name: foo
+  namespace: bar
+tests:
+  - it: should render full image name with digest
+    set:
+      image.repository: reakaleek/otelcol-custom@sha256
+      image.tag: b327730c7acb2570569c744a88649fdb19925322ce3e4f8fac300ff01dd2f983
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: reakaleek/otelcol-custom@sha256:b327730c7acb2570569c744a88649fdb19925322ce3e4f8fac300ff01dd2f983
+  - it: should render full image name with tag
+    set:
+      image.repository: reakaleek/otelcol-custom
+      image.tag: 1.0.0
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: reakaleek/otelcol-custom:1.0.0

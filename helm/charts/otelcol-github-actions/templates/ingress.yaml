@@ -1,0 +1,76 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "otelcol-github-actions.fullname" . }}-otel-collector
+  labels:
+  {{- include "otelcol-github-actions.labels" . | nindent 4 }}
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ include "otelcol-github-actions.ip.whitelist" . }}
+    nginx.ingress.kubernetes.io/mirror-target: https://{{ .Values.host }}/traces$request_uri
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: '{{ include "otelcol-github-actions.fullname" . }}-otel-collector'
+                port:
+                  number: {{ include "otelcol-github-actions.receiver.port" . }}
+            path: /
+            pathType: Prefix
+          - backend:
+              service:
+                name: '{{ include "otelcol-github-actions.fullname" . }}-otel-collector'
+                port:
+                  number: 1777
+            path: /debug/pprof
+            pathType: Prefix
+          - backend:
+              service:
+                name: '{{ include "otelcol-github-actions.fullname" . }}-otel-collector'
+                port:
+                  number: 55679
+            path: /debug
+            pathType: Prefix
+          - backend:
+              service:
+                name: '{{ include "otelcol-github-actions.fullname" . }}-otel-collector'
+                port:
+                  number: 8888
+            path: /metrics
+            pathType: Prefix
+  tls:
+    - hosts:
+        - otelcol-github-actions.elastic.dev
+      secretName: otel-collector-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "otelcol-github-actions.fullname" . }}-otel-collector-traces
+  labels:
+  {{- include "otelcol-github-actions.labels" . | nindent 4 }}
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: '{{ include "otelcol-github-actions.fullname" . }}-otel-collector-traces'
+                port:
+                  number: 19418
+            path: /traces(/|$)(.*)
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - otelcol-github-actions.elastic.dev
+      secretName: otel-collector-tls

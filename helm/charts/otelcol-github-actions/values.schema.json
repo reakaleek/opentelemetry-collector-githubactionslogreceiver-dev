@@ -1,0 +1,88 @@
+{
+    "title": "Chart Values",
+    "type": "object",
+    "properties": {
+        "host": {
+            "type": "string",
+            "description": "The hostname of the OpenTelemetry Collector",
+            "default": "otelcol-github-actions.elastic.dev"
+        },
+        "ip": {
+            "type": "object",
+            "properties": {
+                "whitelist": {
+                    "type": "array",
+                    "description": "The IP whitelist for the Ingress",
+                    "default": [
+                        "192.30.252.0/22",
+                        "185.199.108.0/22",
+                        "140.82.112.0/20",
+                        "143.55.64.0/20",
+                        "2a0a:a440::/29",
+                        "2606:50c0::/32"
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "image": {
+            "type": "object",
+            "properties": {
+                "repository": {
+                    "type": "string",
+                    "description": "The image repository to pull from",
+                    "default": "reakaleek/otelcol-custom@sha256"
+                },
+                "tag": {
+                    "type": "string",
+                    "description": "The image tag to pull",
+                    "default": "b327730c7acb2570569c744a88649fdb19925322ce3e4f8fac300ff01dd2f983"
+                },
+                "pullPolicy": {
+                    "type": "string",
+                    "description": "The image pull policy",
+                    "default": "IfNotPresent"
+                }
+            }
+        },
+        "replicaCount": {
+            "type": "number",
+            "description": "The number of replicas to run",
+            "default": 2
+        },
+        "resources": {
+            "type": "object",
+            "description": "The resources to allocate to the container",
+            "default": {}
+        },
+        "extraEnv": {
+            "type": "array",
+            "description": "The name of the environment variable",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the environment variable"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "The value of the environment variable"
+                    }
+                }
+            }
+        },
+        "serviceAccount": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "type": "object",
+                    "description": "Annotations for the service account",
+                    "default": {}
+                }
+            }
+        }
+    }
+}
