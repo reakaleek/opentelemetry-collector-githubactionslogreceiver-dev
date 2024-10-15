@@ -1,4 +1,4 @@
-OTEL_VERSION ?= 0.102.0
+OTEL_VERSION ?= 0.98.0
 
 clean:
 	@rm -rf githubactionslogreceiver
