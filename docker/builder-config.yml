@@ -1,25 +1,26 @@
 dist:
   name: otelcol-custom
+  otelcol_version: 0.111.0
   output_path: ./bin
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.98.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/elasticsearchexporter v0.98.0
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.111.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.111.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/elasticsearchexporter v0.111.0
 
 processors:
-  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.98.0
-  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.98.0
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.111.0
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.111.0
 
 receivers:
-  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionslogreceiver v0.98.0
-    path: ./githubactionslogreceiver
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionsreceiver v0.98.0
-    path: ./githubactionsreceiver
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.111.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.111.0
+#  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionslogreceiver v0.111.0
+#    path: ./githubactionslogreceiver
+#  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionsreceiver v0.111.0
+#    path: ./githubactionsreceiver
 
 extensions:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.98.0
-  - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.98.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.111.0
+  - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.111.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.111.0
