@@ -99,7 +99,7 @@ jobs:
           push: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
           build-args: |
             OTEL_VERSION=${{ env.OTEL_VERSION }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+#          cache-from: type=gha
+#          cache-to: type=gha,mode=max
           no-cache: true
 
