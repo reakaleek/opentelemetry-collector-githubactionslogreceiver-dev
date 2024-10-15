@@ -49,13 +49,6 @@ jobs:
           path: opentelemetry-collector-contrib
           sparse-checkout: receiver/githubactionslogreceiver
 
-      - name: checkout v1v/opentelemetry-github-actions-annotations-receiver@feature/send-annotations
-        uses: actions/checkout@v4
-        with:
-          repository: v1v/opentelemetry-github-actions-annotations-receiver
-          ref: 'feature/send-annotations'
-          path: opentelemetry-collector-contrib/receiver/githubactionsannotationsreceiver
-
       - name: Generate image name
         id: image
         working-directory: opentelemetry-collector-contrib
@@ -64,7 +57,7 @@ jobs:
           name="${DOCKER_IMAGE_NAME}:${OTEL_VERSION}-githubactionslogreceiver-${commit}"
           echo "name=${name}" >> "${GITHUB_OUTPUT}"
 
-      - name: Generate githubactionslogreceiver
+      - name: Copy githubactionslogreceiver
         working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
         run: make githubactionslogreceiver
 
@@ -72,15 +65,6 @@ jobs:
         working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
         run: |
           cp -r ../../krzko-opentelemetry-collector-contrib/receiver/githubactionsreceiver ./githubactionsreceiver
-
-      - name: Generate githubactionsannotationsreceiver
-        working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
-        run: make githubactionsannotationsreceiver
-
-      - name: Copy githubactionsannotationsreceiver
-        working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
-        run: |
-          cp -r ../../opentelemetry-collector-contrib/receiver/githubactionsannotationsreceiver ./githubactionsannotationsreceiver
 
       - if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
         name: Login to Docker Hub

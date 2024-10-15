@@ -18,8 +18,6 @@ receivers:
     path: ./githubactionslogreceiver
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionsreceiver v0.98.0
     path: ./githubactionsreceiver
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/githubactionsannotationsreceiver v0.98.0
-    path: ./githubactionsannotationsreceiver
 
 extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.98.0
