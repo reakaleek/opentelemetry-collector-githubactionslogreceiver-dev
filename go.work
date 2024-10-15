@@ -1,6 +1,7 @@
-go 1.21.6
+go 1.23.2
 
 use (
 	../opentelemetry-collector-contrib/receiver/githubactionslogreceiver
+	../opentelemetry-collector-contrib/receiver/githubactionsannotationsreceiver
 	./otelcol-dev
 )
