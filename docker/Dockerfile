@@ -1,4 +1,4 @@
-FROM golang:1.21 as build
+FROM golang:1.23 as build
 ARG  OTEL_VERSION
 WORKDIR /app
 RUN go install go.opentelemetry.io/collector/cmd/builder@v${OTEL_VERSION}
