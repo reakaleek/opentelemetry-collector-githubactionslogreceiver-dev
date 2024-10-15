@@ -77,7 +77,7 @@ jobs:
       - name: Copy githubactionsannotationsreceiver
         working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
         run: |
-          cp -r v1v-opentelemetry-collector-contrib ./githubactionsannotationsreceiver
+          cp -r ../../v1v-opentelemetry-collector-contrib ./githubactionsannotationsreceiver
 
       - if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
         name: Login to Docker Hub
