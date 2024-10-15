@@ -54,7 +54,7 @@ jobs:
         with:
           repository: v1v/opentelemetry-github-actions-annotations-receiver
           ref: 'feature/send-annotations'
-          path: opentelemetry-collector-contrib/receiver/githubactionsannotationsreceiver
+          path: v1v-opentelemetry-collector-contrib
 
       - name: Generate image name
         id: image
@@ -73,14 +73,11 @@ jobs:
         run: |
           cp -r ../../krzko-opentelemetry-collector-contrib/receiver/githubactionsreceiver ./githubactionsreceiver
 
-      - name: Generate githubactionsannotationsreceiver
-        working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
-        run: make githubactionsannotationsreceiver
 
       - name: Copy githubactionsannotationsreceiver
         working-directory: opentelemetry-collector-githubactionslogreceiver-dev/docker
         run: |
-          cp -r ../../opentelemetry-collector-contrib/receiver/githubactionsannotationsreceiver ./githubactionsannotationsreceiver
+          cp -r v1v-opentelemetry-collector-contrib ./githubactionsannotationsreceiver
 
       - if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
         name: Login to Docker Hub

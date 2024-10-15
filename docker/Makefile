@@ -1,4 +1,4 @@
-OTEL_VERSION ?= 0.98.0
+OTEL_VERSION ?= 0.102.0
 
 clean:
 	@rm -rf githubactionslogreceiver
@@ -7,7 +7,7 @@ githubactionslogreceiver: clean
 	@cp -r ../../opentelemetry-collector-contrib/receiver/githubactionslogreceiver ./githubactionslogreceiver
 
 githubactionsannotationsreceiver:
-	@cp -r ../../opentelemetry-collector-contrib/receiver/githubactionsannotationsreceiver ./githubactionsannotationsreceiver
+	@cp -r ../../opentelemetry-github-actions-annotations-receiver ./githubactionsannotationsreceiver
 
 build: githubactionslogreceiver githubactionsannotationsreceiver
 	@test -n "$(COMMIT)" || (echo "COMMIT is not set"; exit 1)
