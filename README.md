@@ -21,6 +21,13 @@ This repository contains the development environment for the GitHub Actions Log 
     git clone https://github.com/reakaleek/opentelemetry-collector-contrib.git --branch feature/githubactionslogsreceiver
     ```
 
+1. Clone the https://github.com/v1v/opentelemetry-github-actions-annotations-receiver repository as a sibling to this repository and checkout the branch `feature/send-annotations`.
+
+    ```bash
+    git clone https://github.com/v1v/opentelemetry-github-actions-annotations-receiver --branch feature/send-annotations
+    cp -rf opentelemetry-github-actions-annotations-receiver opentelemetry-collector-contrib/receiver/githubactionsannotationsreceiver
+    ```
+
 1. Go to the development environment directory.
 
     ```bash
