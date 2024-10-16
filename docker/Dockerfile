@@ -12,17 +12,33 @@ ARG LOGS_RECEIVER_CLONE_URL="https://github.com/v1v/opentelemetry-github-actions
 ARG TRACES_RECEIVER_CLONE_URL="https://github.com/v1v/opentelemetry-github-actions-receiver.git"
 ARG ANNOTATIONS_RECEIVER_CLONE_URL="https://github.com/v1v/opentelemetry-github-actions-annotations-receiver.git"
 
-RUN git clone "$LOGS_RECEIVER_CLONE_URL" "$LOGS_RECEIVER_NAME"
-RUN git clone "$TRACES_RECEIVER_CLONE_URL" "$TRACES_RECEIVER_NAME"
-RUN git clone "$ANNOTATIONS_RECEIVER_CLONE_URL" "$ANNOTATIONS_RECEIVER_NAME"
+ARG LOGS_RECEIVER_REF="ef11b639ed5a30fe8ddda6e9d28c9bc6e0001904"
+ARG TRACES_RECEIVER_REF="9f12e3e259c7814ca1d0aaf95d27ad41da44c07b"
+ARG ANNOTATIONS_RECEIVER_REF="24bbb3f33c79b0677c40451971b6d274187db366"
+
+LABEL logs-receiver-ref="$LOGS_RECEIVER_REF"
+LABEL traces-receiver-ref="$TRACES_RECEIVER_REF"
+LABEL annotations-receiver-ref="$ANNOTATIONS_REF"
+
+RUN git clone "$LOGS_RECEIVER_CLONE_URL" "$LOGS_RECEIVER_NAME" \
+    && cd "$LOGS_RECEIVER_NAME" \
+    && git reset --hard "$LOGS_RECEIVER_REF"
+
+RUN git clone "$TRACES_RECEIVER_CLONE_URL" "$TRACES_RECEIVER_NAME" \
+    && cd "$TRACES_RECEIVER_NAME" \
+    && git reset --hard  "$TRACES_RECEIVER_REF"
+
+RUN git clone "$ANNOTATIONS_RECEIVER_CLONE_URL" "$ANNOTATIONS_RECEIVER_NAME" \
+    && cd "$ANNOTATIONS_RECEIVER_NAME" \
+    && git reset --hard  "$ANNOTATIONS_RECEIVER_REF"
 
 FROM golang:1.23 AS build
 ARG LOGS_RECEIVER_NAME
 ARG TRACES_RECEIVER_NAME
 ARG ANNOTATIONS_RECEIVER_NAME
+RUN apt-get update && apt-get install yq -y --no-install-recommends
 WORKDIR /app
 COPY ./builder-config.yml .
-RUN apt-get update && apt-get install yq -y --no-install-recommends
 RUN yq -r '.dist.otel_version' builder-config.yml > .otel_version
 RUN go install go.opentelemetry.io/collector/cmd/builder@v$(cat .otel_version)
 COPY --from=clone /git/"$LOGS_RECEIVER_NAME" ./"$LOGS_RECEIVER_NAME"
